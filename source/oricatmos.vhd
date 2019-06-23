@@ -33,16 +33,16 @@ port (
 	AUDIO_OUT           : out   std_logic;
 
 	-- VGA out
---	O_VIDEO_R           : out   std_logic_vector(3 downto 0);
---	O_VIDEO_G           : out   std_logic_vector(3 downto 0);
---	O_VIDEO_B           : out   std_logic_vector(3 downto 0);
---	O_HSYNC             : out   std_logic;
---	O_VSYNC             : out   std_logic;
---	VIDEO_SYNC          : out   std_logic;
+	O_VIDEO_R           : out   std_logic_vector(3 downto 0);
+	O_VIDEO_G           : out   std_logic_vector(3 downto 0);
+	O_VIDEO_B           : out   std_logic_vector(3 downto 0);
+	O_HSYNC             : out   std_logic;
+	O_VSYNC             : out   std_logic;
+-- VIDEO_SYNC          : out   std_logic;
 
 	-- HDMI video output
-	TMDS_P		: out   std_logic_vector(3 downto 0);
-	TMDS_N		: out   std_logic_vector(3 downto 0);
+	--TMDS_P		: out   std_logic_vector(3 downto 0);
+	--TMDS_N		: out   std_logic_vector(3 downto 0);
 
 	-- K7 connector
 	K7_TAPEIN         : in    std_logic;
@@ -149,19 +149,19 @@ architecture RTL of ORIC is
 	signal dummy              : std_logic_vector( 3 downto 0) := (others => '0');
 	signal s_cmpblk_n_out     : std_logic;
 
-	signal VideoR             : std_logic_vector(3 downto 0);
-	signal VideoG             : std_logic_vector(3 downto 0);
-	signal VideoB             : std_logic_vector(3 downto 0);
+	--signal VideoR             : std_logic_vector(3 downto 0);
+	--signal VideoG             : std_logic_vector(3 downto 0);
+	--signal VideoB             : std_logic_vector(3 downto 0);
 
-	signal red_s              : std_logic;
-	signal grn_s              : std_logic;
-	signal blu_s              : std_logic;
+--	signal red_s              : std_logic;
+--	signal grn_s              : std_logic;
+--	signal blu_s              : std_logic;
 
-	signal clk_dvi_p          : std_logic;
-	signal clk_dvi_n          : std_logic;
-	signal clk_dvi_pixel      : std_logic;
-	signal clk_s              : std_logic;
-	signal s_blank            : std_logic;
+--	signal clk_dvi_p          : std_logic;
+--	signal clk_dvi_n          : std_logic;
+--	signal clk_dvi_pixel      : std_logic;
+--	signal clk_s              : std_logic;
+--	signal s_blank            : std_logic;
 
 begin
 	-----------------------------------------------
@@ -219,9 +219,9 @@ begin
 
 
 	-- Distribute some PLL clocks globally
-	inst_buf0 : BUFG port map (I => clkout0, O => clk_dvi_p);
-	inst_buf1 : BUFG port map (I => clkout1, O => clk_dvi_n);
-	inst_buf2 : BUFG port map (I => clkout2, O => clk_dvi_pixel);
+--	inst_buf0 : BUFG port map (I => clkout0, O => clk_dvi_p);
+--	inst_buf1 : BUFG port map (I => clkout1, O => clk_dvi_n);
+--	inst_buf2 : BUFG port map (I => clkout2, O => clk_dvi_pixel);
 	inst_buf3 : BUFG port map (I => clkout3, O => clk24);
 	inst_buf4 : BUFG port map (I => clkout4, O => clk12);
 	clk6 <= clkout5;
@@ -381,9 +381,15 @@ begin
 
 		-- for VGA output, feed these signals to VGA monitor
 		O_VIDEO(15 downto 12)=> dummy,
-		O_VIDEO(11 downto 8) => VideoR,
-		O_VIDEO( 7 downto 4) => VideoG,
-		O_VIDEO( 3 downto 0) => VideoB,
+--		O_VIDEO(11 downto 8) => VideoR,
+--		O_VIDEO( 7 downto 4) => VideoG,
+--		O_VIDEO( 3 downto 0) => VideoB,
+		
+		O_VIDEO(11 downto 8) => O_VIDEO_R,
+		O_VIDEO( 7 downto 4) => O_VIDEO_G,
+		O_VIDEO( 3 downto 0) => O_VIDEO_B,
+
+		
 		O_HSYNC					=> HSync,
 		O_VSYNC					=> VSync,
 		O_CMPBLK_N				=> s_cmpblk_n_out,
@@ -394,33 +400,33 @@ begin
 	);
 
 	-- HDMI driver section start --
-	OBUFDS_clk : OBUFDS port map ( O => TMDS_P(3), OB => TMDS_N(3), I => clk_s );
-	OBUFDS_red : OBUFDS port map ( O => TMDS_P(2), OB => TMDS_N(2), I => red_s );
-	OBUFDS_grn : OBUFDS port map ( O => TMDS_P(1), OB => TMDS_N(1), I => grn_s );
-	OBUFDS_blu : OBUFDS port map ( O => TMDS_P(0), OB => TMDS_N(0), I => blu_s );
+--	OBUFDS_clk : OBUFDS port map ( O => TMDS_P(3), OB => TMDS_N(3), I => clk_s );
+--	OBUFDS_red : OBUFDS port map ( O => TMDS_P(2), OB => TMDS_N(2), I => red_s );
+--	OBUFDS_grn : OBUFDS port map ( O => TMDS_P(1), OB => TMDS_N(1), I => grn_s );
+--	OBUFDS_blu : OBUFDS port map ( O => TMDS_P(0), OB => TMDS_N(0), I => blu_s );
 
-	s_blank <= not s_cmpblk_n_out;
+--	s_blank <= not s_cmpblk_n_out;
 
-	inst_dvid: entity work.dvid
-	port map(
-		clk_p     => clk_dvi_p,
-		clk_n     => clk_dvi_n, 
-		clk_pixel => clk_dvi_pixel,
-		red_p(  7 downto 4) => VideoR,
-		red_p(  3 downto 0) => x"0",
-		green_p(7 downto 4) => VideoG,
-		green_p(3 downto 0) => x"0",
-		blue_p( 7 downto 4) => VideoB,
-		blue_p( 3 downto 0) => x"0",
-		blank     => s_blank,
-		hsync     => HSync,
-		vsync     => VSync,
+--	inst_dvid: entity work.dvid
+--	port map(
+--		clk_p     => clk_dvi_p,
+--		clk_n     => clk_dvi_n, 
+--		clk_pixel => clk_dvi_pixel,
+--		red_p(  7 downto 4) => VideoR,
+--		red_p(  3 downto 0) => x"0",
+--		green_p(7 downto 4) => VideoG,
+--		green_p(3 downto 0) => x"0",
+--		blue_p( 7 downto 4) => VideoB,
+--		blue_p( 3 downto 0) => x"0",
+--		blank     => s_blank,
+--		hsync     => HSync,
+--		vsync     => VSync,
 		-- outputs to TMDS drivers
-		red_s     => red_s,
-		green_s   => grn_s,
-		blue_s    => blu_s,
-		clock_s   => clk_s
-	);
+--		red_s     => red_s,
+--		green_s   => grn_s,
+--		blue_s    => blu_s,
+--		clock_s   => clk_s
+--	);
 	-- HDMI driver section end --
 
 	------------------------------------------------------------

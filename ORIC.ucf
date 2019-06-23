@@ -1,0 +1,34 @@
+
+# PlanAhead Generated physical constraints 
+
+NET "CLK_50" LOC = T8 | TNM_NET = sys_clk_pin;
+TIMESPEC TS_sys_clk_pin = PERIOD sys_clk_pin 50000 kHz;
+
+NET "O_VIDEO_R[0]" LOC = M12;
+NET "O_VIDEO_R[1]" LOC = L12;
+NET "O_VIDEO_R[2]" LOC = N14;
+NET "O_VIDEO_R[3]" LOC = M13;
+
+NET "O_VIDEO_G[0]" LOC = P9;
+NET "O_VIDEO_G[1]" LOC = L10;
+NET "O_VIDEO_G[2]" LOC = M10;
+NET "O_VIDEO_G[3]" LOC = P11;
+
+NET "O_VIDEO_B[0]" LOC = M7;
+NET "O_VIDEO_B[1]" LOC = P8;
+NET "O_VIDEO_B[2]" LOC = N8;
+NET "O_VIDEO_B[3]" LOC = L7;
+
+NET "O_HSYNC" LOC = L13;
+NET "O_VSYNC" LOC = M14;
+
+NET "AUDIO_OUT" LOC = J11; #Buzzer
+
+NET "I_RESET" LOC = L3;
+
+NET "K7_TAPEIN" LOC = K15;
+NET "K7_TAPEOUT" LOC = K16;
+
+NET "PS2CLK1" LOC = M15;
+NET "PS2DAT1" LOC = H16;
+
